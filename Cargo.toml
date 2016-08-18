@@ -1,6 +1,6 @@
 [package]
 description = "A simple STUN client library and command line tool"
-license = "LICENSE"
+license = "MIT"
 name = "stun"
 version = "0.0.1"
 authors = ["Zac Stewart <zgstewart@gmail.com>"]
