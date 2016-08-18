@@ -1,9 +1,13 @@
 [package]
+authors = ["Zac Stewart <zgstewart@gmail.com>"]
 description = "A simple STUN client library and command line tool"
+homepage = "https://github.com/zacstewart/stun"
+keywords = ["stun", "client", "nat", "traversal"]
 license = "MIT"
 name = "stun"
+readme = "README.md"
+repository = "https://github.com/zacstewart/stun"
 version = "0.0.1"
-authors = ["Zac Stewart <zgstewart@gmail.com>"]
 
 [lib]
 name = "stun"
