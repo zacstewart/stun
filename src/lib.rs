@@ -69,7 +69,7 @@ impl Header {
 }
 
 #[derive(Debug)]
-pub struct XorMappedAddress(SocketAddr);
+pub struct XorMappedAddress(pub SocketAddr);
 
 impl XorMappedAddress {
     fn decode(encoded: Vec<u8>) -> Result<XorMappedAddress, String> {
@@ -165,7 +165,7 @@ impl Attribute {
 #[derive(Debug)]
 pub struct Message {
     header: Header,
-    attributes: Vec<Attribute>
+    pub attributes: Vec<Attribute>
 }
 
 impl Message {
