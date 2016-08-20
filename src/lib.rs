@@ -38,7 +38,7 @@ struct Header {
 
 impl Header {
     pub fn decode(encoded: &[u8]) -> Header {
-        let message_type = ((encoded[0] as u16) << 8) + (encoded[1] as u16);
+        let message_type = ((encoded[0] as u16) << 8) | (encoded[1] as u16);
         let class = MessageClass::from_u16(message_type & 0b00000100010000).unwrap();
         Header {
             class: class,
@@ -73,7 +73,7 @@ pub struct XorMappedAddress(pub SocketAddr);
 
 impl XorMappedAddress {
     fn decode(encoded: Vec<u8>) -> Result<XorMappedAddress, String> {
-        let port = ((encoded[2] as u16) << 8) + (encoded[3] as u16) ^ 0x2112;
+        let port = (((encoded[2] as u16) << 8) | (encoded[3] as u16)) ^ 0x2112;
         let ip = match encoded[1] {
             1 => {
                 let octets: Vec<u8> = encoded[4..8].iter().zip(&MAGIC_COOKIE).map(|(b,m)| b ^ m).collect();
