@@ -18,3 +18,5 @@ name = "stun"
 path = "src/main.rs"
 
 [dependencies]
+
+rand = "0.3.14"

@@ -1,3 +1,5 @@
+extern crate rand;
+
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr, ToSocketAddrs, UdpSocket};
 use std::mem;
 
@@ -41,10 +43,14 @@ impl Header {
     pub fn decode(encoded: &[u8]) -> Header {
         let message_type = ((encoded[0] as u16) << 8) | (encoded[1] as u16);
         let class = MessageClass::from_u16(message_type & 0b00000100010000).unwrap();
+        let mut transaction_id = [0u8; 12];
+        for (t, &e) in transaction_id.iter_mut().zip(&encoded[8..20]) {
+            *t = e;
+        }
         Header {
             class: class,
             method: MessageMethod::Binding,
-            transaction_id: [7; 12]
+            transaction_id: transaction_id
         }
     }
 
@@ -196,7 +202,7 @@ impl Message {
         let header = Header {
             class: MessageClass::Request,
             method: MessageMethod::Binding,
-            transaction_id: [7; 12]
+            transaction_id: rand::random::<[u8; 12]>()
         };
         Message {
             header: header,
@@ -255,7 +261,8 @@ mod tests {
         let encoded = Message::request().encode();
 
         let expected = vec![0, 1, 0, 0, 33, 18, 164, 66, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7];
-        assert_eq!(encoded, expected);
+        assert_eq!(encoded.len(), 20);
+        assert_eq!(encoded[..8], expected[..8]);
     }
 
     #[test]
@@ -266,6 +273,7 @@ mod tests {
         let message = Message::decode(encoded);
         assert_eq!(message.header.method, MessageMethod::Binding);
         assert_eq!(message.header.class, MessageClass::SuccessResponse);
+        assert_eq!(message.header.transaction_id, [7u8; 12]);
         assert_eq!(message.attributes.len(), 1);
     }
 
