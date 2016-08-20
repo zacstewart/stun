@@ -124,10 +124,13 @@ impl Attribute {
                 0x0014 => Attribute::decode_realm(value),
                 0x0015 => Attribute::decode_nonce(value),
                 0x0020 => Attribute::decode_xor_mapped_address(value),
-                _ => { return Err(format!("Unknown attribute type: {}", attribute_type)) }
+                _ => { Err(format!("Unknown attribute type: 0x{:x}", attribute_type)) }
             };
 
-            attributes.push(attribute.unwrap())
+            match attribute {
+                Ok(attr) => attributes.push(attr),
+                Err(error) => println!("{}", error)
+            }
         }
 
         Ok(attributes)
