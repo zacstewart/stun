@@ -74,9 +74,13 @@ pub struct XorMappedAddress(pub SocketAddr);
 impl XorMappedAddress {
     fn decode(encoded: Vec<u8>) -> Result<XorMappedAddress, String> {
         let port = (((encoded[2] as u16) << 8) | (encoded[3] as u16)) ^ 0x2112;
+        let encoded_ip = &encoded[4..];
         let ip = match encoded[1] {
             1 => {
-                let octets: Vec<u8> = encoded[4..8].iter().zip(&MAGIC_COOKIE).map(|(b,m)| b ^ m).collect();
+                let octets: Vec<u8> = encoded_ip.iter()
+                    .zip(&MAGIC_COOKIE)
+                    .map(|(b,m)| b ^ m)
+                    .collect();
                 IpAddr::V4(Ipv4Addr::new(octets[0], octets[1], octets[2], octets[3]))
             }
             2 => {
