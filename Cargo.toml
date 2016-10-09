@@ -7,7 +7,7 @@ license = "MIT"
 name = "stun"
 readme = "README.md"
 repository = "https://github.com/zacstewart/stun"
-version = "0.0.1"
+version = "0.0.2"
 
 [lib]
 name = "stun"
