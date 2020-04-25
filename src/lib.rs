@@ -1,7 +1,7 @@
-extern crate rand;
-
 use std::mem;
 use std::net::{IpAddr, Ipv4Addr, Ipv6Addr, SocketAddr, ToSocketAddrs, UdpSocket};
+
+use rand;
 
 const MAGIC_COOKIE: [u8; 4] = [0x21, 0x12, 0xA4, 0x42];
 
@@ -48,9 +48,9 @@ impl Header {
             *t = e;
         }
         Header {
-            class: class,
+            class,
             method: MessageMethod::Binding,
-            transaction_id: transaction_id,
+            transaction_id,
         }
     }
 
@@ -112,7 +112,7 @@ impl XorMappedAddress {
                     segments[7],
                 ))
             }
-            e @ _ => return Err(format!("Invalid address family: {:?}", e)),
+            e => return Err(format!("Invalid address family: {:?}", e)),
         };
 
         let address = SocketAddr::new(ip, port);
@@ -194,7 +194,7 @@ impl Attribute {
         value: Vec<u8>,
         transaction_id: [u8; 12],
     ) -> Result<Attribute, String> {
-        XorMappedAddress::decode(value, transaction_id).map(|a| Attribute::XorMappedAddress(a))
+        XorMappedAddress::decode(value, transaction_id).map(Attribute::XorMappedAddress)
     }
 }
 
@@ -212,7 +212,7 @@ impl Message {
             transaction_id: rand::random::<[u8; 12]>(),
         };
         Message {
-            header: header,
+            header,
             attributes: vec![],
         }
     }
@@ -220,10 +220,7 @@ impl Message {
     pub fn decode(encoded: Vec<u8>) -> Message {
         let header = Header::decode(&encoded[..20]);
         let attributes = Attribute::decode_all(&encoded[20..], header.transaction_id).unwrap();
-        Message {
-            header: header,
-            attributes: attributes,
-        }
+        Message { header, attributes }
     }
     pub fn encode(&self) -> Vec<u8> {
         self.header.encode()

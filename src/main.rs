@@ -1,5 +1,3 @@
-extern crate stun;
-
 use stun::{Client, IpVersion, Message};
 
 use structopt::StructOpt;
@@ -20,7 +18,7 @@ fn parse_ipver(src: &str) -> Result<IpVersion, String> {
     match src {
         "4" => Ok(IpVersion::V4),
         "6" => Ok(IpVersion::V6),
-        e @ _ => Err(format!("Unknown IP version: {}", e)),
+        e => Err(format!("Unknown IP version: {}", e)),
     }
 }
 
