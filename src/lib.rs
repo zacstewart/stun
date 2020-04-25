@@ -223,7 +223,11 @@ impl Message {
     }
 }
 
-pub enum IpVersion { V4, V6 }
+#[derive(Debug)]
+pub enum IpVersion {
+    V4,
+    V6,
+}
 
 pub struct Client {
     server: SocketAddr,
